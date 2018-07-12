@@ -338,6 +338,7 @@ void export_to_csv()
     f2.close();
 }
 
+/*  function to export to another csv file for making the graph */
 void export_to_graph_csv()
 {
     Tstrom T;
@@ -361,6 +362,7 @@ void export_to_graph_csv()
     f2.close();
 }
 
+/*  a function to print visual-promt keys   */
 void print_key(position p, char key[size])
 {
     gotoxy(p);
@@ -382,25 +384,32 @@ void print_key(position p, char key[size])
 
 }
 
+/*  a function to print just one line from history, in tabular format   */
 void print_one_hist(position start, Tstrom T, int i)
 {
+    //  position to print around the console
     position start2=start, start3=start;
 
     int colnum=8;
 
+    //  the column headers
     char col_head[size][size]={"Rec No.","Date(DD-MM-YY)","Day of Week", "Recorded at(HH:MM:SS)","Time Difference(ms)","Time Difference(s)","Distance(m)","Distance(km)"};
 
+    //  2 rows, one for header, one for the data
     int rownum=2;
 
+    //  declaring and figuring out the collen
     int collen[size]={0};
     get_collen_rowfill(col_head, colnum, collen);
 
+    //  draw the table and then fill the header
     drawtable(start, collen, colnum, rownum, EXT);
     fillrow(start2, col_head, collen, colnum, rownum, 0);
 
     start3.x+=2;
     start3.y+=3;
 
+    //  printing the one history data
         gotoxy(1,start3.y);
         cout<<setw(collen[0]-1)<<setfill(' ')<<i;
 
@@ -451,12 +460,15 @@ void print_one_hist(position start, Tstrom T, int i)
 
 }
 
+/*  handling the advanced history menu  */
 void hist_adv()
 {
+    //  menu goto-handler
     adv:
     system("cls");
     cout<<"Advanced";
 
+    //  used for menu-handling
     position str, p;
 	str.x=0;
 	str.y=2;
@@ -469,13 +481,14 @@ void hist_adv()
 
 	switch(menu_id)
 	{
-    case 0:
+    case 0: //  farthest distance
         {
-            double max=-3.402823466e+38F;
+            double max=-3.402823466e+38F;   //  initial setting the lowest double value as max
             fstream f;
             Tstrom T, T1;
             f.open("HistoryFiles\\hist.dat", ios::in | ios::binary);
 
+            //  figuring out the maximum value
             int i=0, I;
             while(f.read((char*) & T, sizeof(T)))
             {
@@ -492,6 +505,7 @@ void hist_adv()
             p.x=0;
             p.y=str.y+7;
 
+            //  printing the largest value as one lined history
             print_one_hist(p, T1, I);
             cout<<endl<<"Press any key to continue...";
             _getch();
@@ -499,13 +513,14 @@ void hist_adv()
         }
         break;
 
-    case 1:
+    case 1: //  nearest distance
         {
-            double min=3.402823466e+38F;
+            double min=3.402823466e+38F;    //  initial setting the highest double value as min
             fstream f;
             Tstrom T, T1;
             f.open("HistoryFiles\\hist.dat", ios::in | ios::binary);
 
+            //  figuring out the minimum value
             int i=0, I;
             while(f.read((char*) & T, sizeof(T)))
             {
@@ -522,6 +537,7 @@ void hist_adv()
             p.x=0;
             p.y=str.y+7;
 
+            //  printing the lowest value as one lined history
             print_one_hist(p, T1, I);
             cout<<endl<<"Press any key to continue...";
             _getch();
@@ -529,7 +545,7 @@ void hist_adv()
         }
         break;
 
-    case 2:
+    case 2: //  searching a record
         {
             int rec_no;
             Tstrom T;
@@ -538,6 +554,7 @@ void hist_adv()
             ifstream fio("HistoryFiles\\hist.dat", ios::in | ios::binary);
             ofstream file("HistoryFiles\\temp.dat", ios::out | ios::binary);
 
+            //  loop to find the requested record number
             int i=0;
             //while(!fio.eof())
             int chk=0;
@@ -558,6 +575,7 @@ void hist_adv()
                 }
 
             }
+            //  if record not found
             if(chk==0)
                 cout<<endl<<"Record No.: "<<rec_no<<" is invalid";
 
@@ -567,7 +585,7 @@ void hist_adv()
         }
         break;
 
-    case 3:
+    case 3: //  delete a record
         {
             int rec_no;
             Tstrom T;
@@ -576,6 +594,7 @@ void hist_adv()
             ifstream fio2("HistoryFiles\\hist.dat", ios::in | ios::binary);
             ofstream file2("HistoryFiles\\temp.dat", ios::out | ios::binary);
 
+            //  loop to find the record number
             int i2=0;
             //while(!fio.eof())
             int chk=0;
@@ -591,6 +610,7 @@ void hist_adv()
                     p.x=0;
                     p.y=str.y+7;
 
+                    //  menu-prompt for confirming the deletion
                     print_one_hist(p, T, i2);
                     cout<<endl<<"Do you want to delete this record?";
 
@@ -604,7 +624,7 @@ void hist_adv()
 
                     switch(menu_id)
                     {
-                    case 0:
+                    case 0: //  yes
                         {
                             cout<<endl<<"Record No.: "<<rec_no<<" has been successfully deleted";
                             //goto loop;
@@ -612,13 +632,14 @@ void hist_adv()
                         }
                         break;
 
-                    case 1:
+                    case 1: //  no
                         break;
                     }
 
                 }
                 file2.write((char*)&T, sizeof(T));
             }
+            //  if record not found
             if(chk==0)
                 cout<<endl<<"Record No.: "<<rec_no<<" is invalid";
             else
@@ -635,11 +656,11 @@ void hist_adv()
         }
         break;
 
-    case 4:
+    case 4: //  export to graph
         {
-            export_to_graph_csv();
-            system("Graphing\\plot0.bat");
-            system("Graphing\\plot1.bat");
+            export_to_graph_csv();  //  exporting to csv for graphing
+            system("Graphing\\plot0.bat");  //  ploting directly into the terminal
+            system("Graphing\\plot1.bat");  //  ploting into image files
             cout<<endl<<"  Successfully exported to Graphing\\Graph.png";
             cout<<endl<<"  Successfully exported to Graphing\\Graph.svg";
             system("start Graphing");
@@ -653,24 +674,30 @@ void hist_adv()
 
 }
 
+/*  main function   */
 int main()
 {
     MaximizeOutputWindow();
 
+    //  making required directories at root
     system("mkdir Backup");
     system("mkdir Graphing");
     system("mkdir HistoryFiles");
 
+    //  main-main goto handler
     main_menu:
 
 	system("cls");
 
+	//  print the main-menu ASCII art
 	ascii_art("Art\\art.txt", 0, 0);
 
+	//  position to print around the console
 	position str, p;
 	str.x=0;
 	str.y=11;
 
+	//  visual main menu stuffs
 	int no_items=5;
 	char menu_items[no_items][260]={"Calculate Lightining Strike Distance","History","Backup","Read from Backup","Exit"};
 	int menu_id;
@@ -679,7 +706,7 @@ int main()
 
 	switch(menu_id)
 	{
-    case 0:
+    case 0: //  calc distance
         {
             again:
 
@@ -693,6 +720,7 @@ int main()
                 dist_m=calc_dist(time_s);
                 dist_km=m_to_km(dist_m);
 
+                //  printing calculated values
                 cout<<endl<<endl<<" Calculated values:";
                 cout<<endl<<" Time between Lighting and Thunder: "<<time_ms<<" ms or "<<time_s<<" s";
                 cout<<endl<<" Distance of the Lighting Strike: "<<dist_m<<" m or "<<dist_km<<" km";
@@ -703,8 +731,10 @@ int main()
                 T.dist_m=dist_m;
                 T.dist_km=dist_km;
 
+                //  save history to file
                 save_hist(T);
 
+                //  prompt for repeating
                 cout<<endl<<endl<<endl<<" SPACE  Calculate another Strike      ESC  Return to main menu";
                 p.x=1;
                 p.y=11;
@@ -724,18 +754,20 @@ int main()
                 break;
         }
 
-    case 1:
+    case 1: //  history
         {
             hist_menu:
             system("cls");
+
+            //  printing the history menu ASCII art
             ascii_art("Art\\art2.txt", 0, 0);
 
             int t;
-            t=read_hist();
+            t=read_hist();  //  history menu
 
             switch(t)
             {
-            case 0:
+            case 0: //  export to csv
                 export_to_csv();
                 cout<<"Succesfully exported to HistoryFiles\\History.csv";
                 system("start HistoryFiles");
@@ -744,7 +776,7 @@ int main()
                 goto hist_menu;
                 break;
 
-            case 1:
+            case 1: //  delete history
                 system("del HistoryFiles\\hist.dat");
                 cout<<"History deleted successfully!";
                 Sleep(3000);
@@ -752,11 +784,11 @@ int main()
                 goto main_menu;
                 break;
 
-            case 2:
+            case 2: //  goto main menu
                 goto main_menu;
                 break;
 
-            case 3:
+            case 3: //  proceed to advanced menu
                 hist_adv();
                 goto hist_menu;
                 break;
@@ -766,7 +798,7 @@ int main()
             break;
         }
 
-    case 2:
+    case 2: //  maintain backup
         {
             cout<<endl;
             export_to_csv();
@@ -788,7 +820,7 @@ int main()
         }
         break;
 
-    case 3:
+    case 3: //  read from backup
         {
             cout<<endl<<"Copy the backup files into the \"Backup\" Folder and press ANY KEY to continue...";
             _getch();
@@ -804,7 +836,7 @@ int main()
             goto main_menu;
         }
 
-    case 4:
+    case 4: //  exit
         exit(0);
 
 	}

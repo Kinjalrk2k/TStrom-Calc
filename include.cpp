@@ -1,3 +1,5 @@
+/*  includes gotoxy function and its dependencies   */
+
 #include <windows.h>
 
 HANDLE console2 = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -22,7 +24,7 @@ void gotoxy(int x, int y)
 	SetConsoleCursorPosition(console2,CursorPosition2); // Sets position for next thing to be printed
 }
 
-
+/*  includes all functions for table-handling   */
 
 #include <iostream>
 #include <conio.h>
@@ -968,6 +970,7 @@ int main()
 }
 */
 
+/*  includes all functions for visual-menu handling  */
 
 #include<iostream>
 #include<conio.h>
@@ -1084,7 +1087,7 @@ int main()
 }
 */
 
-
+/*  includes all functions for ASCII art reader */
 
 #include <iostream>
 #include <conio.h>
