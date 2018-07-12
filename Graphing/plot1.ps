@@ -1,0 +1,13 @@
+set datafile separator ','
+set autoscale fix
+unset key
+set title 'Historical Data'
+set ylabel 'Distance(km)'
+set xlabel 'Time(as per records)'
+set grid
+set term svg size 1024,768
+set output 'Graphing\Graph.svg'
+plot 'Graphing\History.csv' with line lt -1 lw 2
+set term png size 1024,768
+set output 'Graphing\Graph.png'
+plot 'Graphing\History.csv' with line lt -1 lw 2
